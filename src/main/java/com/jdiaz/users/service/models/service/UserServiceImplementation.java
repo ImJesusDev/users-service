@@ -21,6 +21,11 @@ public class UserServiceImplementation implements UserServiceInterface{
 	public List<User> findAll() {
 		return (List<User>) userRepository.findAll();
 	}
+	
+	@Override
+	public User save(User user) {
+		return userRepository.save(user);
+	}
 
 	@Override
 	@Transactional(readOnly = true)
