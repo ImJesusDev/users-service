@@ -1,5 +1,6 @@
 package com.jdiaz.users.service.models.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +24,7 @@ public class UserServiceImplementation implements UserServiceInterface{
 	}
 	
 	@Override
+	@Transactional()
 	public User save(User user) {
 		return userRepository.save(user);
 	}
@@ -43,6 +45,21 @@ public class UserServiceImplementation implements UserServiceInterface{
 	@Transactional(readOnly = true)
 	public Optional<User> findByUsername(String username) {
 		return userRepository.findByUsername(username);
+	}
+
+	@Override
+	@Transactional()
+	public User updateUserLastConnection(Long id) {
+		Optional<User> optionalUser = userRepository.findById(id);
+		if(optionalUser.isPresent()) {
+			User user = optionalUser.get();
+			user.setLastConnection(new Date());
+			User updatedUser = userRepository.save(user);
+			return updatedUser;
+		} else {
+			return null;
+		}
+
 	}
 
 }

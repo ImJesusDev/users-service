@@ -43,6 +43,16 @@ public class UserController {
 		User updatedUser = userService.save(user);
 		return new ResponseEntity<User>(updatedUser, HttpStatus.CREATED);
 	}
+	
+	@PutMapping("/update-last-connection/{id}")
+	public ResponseEntity<?> updateUserLastConnection(@PathVariable Long id) {
+		System.out.println("UPDATING LAST CONNECTION");
+		User updatedUser = userService.updateUserLastConnection(id);
+		if(!(updatedUser instanceof User)) {
+			return ResponseEntity.notFound().build();
+		}
+		return new ResponseEntity<User>(updatedUser, HttpStatus.CREATED);
+	}
 
 	@PostMapping("/register-user")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody User user, BindingResult result) {

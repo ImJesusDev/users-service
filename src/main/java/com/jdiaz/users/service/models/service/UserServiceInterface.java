@@ -16,5 +16,7 @@ public interface UserServiceInterface {
 	public Optional<User> findByEmail(String email);
 
 	public Optional<User> findByUsername(String username);
+	
+	public User updateUserLastConnection(Long id);
 
 }

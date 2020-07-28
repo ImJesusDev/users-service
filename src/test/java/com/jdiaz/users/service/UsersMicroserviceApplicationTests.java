@@ -1,4 +1,4 @@
-package com.jdiaz.usersmicroservice;
+package com.jdiaz.users.service;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
