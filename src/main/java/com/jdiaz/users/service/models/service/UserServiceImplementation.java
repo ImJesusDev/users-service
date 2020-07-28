@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.jdiaz.users.commons.models.entity.User;
+import com.commons.jdiaz.users.models.entity.User;
 import com.jdiaz.users.service.models.repositories.UserRepository;
 
 @Service

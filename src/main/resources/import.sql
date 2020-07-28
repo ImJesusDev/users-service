@@ -1,4 +1,4 @@
-INSERT INTO users (first_name, last_name, email, username, password, enabled, created_at, last_connection) VALUES ('Jesús', 'Díaz', 'jesus740@gmail.com', 'icrashone', '$2a$10$yz8jfEWItmAfNaivhnv.ReY/E6tGyDFVbrIT3XDUjQ3wvrJxH0Hya', 1, NOW(), NOW());
+INSERT INTO users (first_name, last_name, email, username, password, enabled, created_at, last_connection) VALUES ('Jesús', 'Díaz', 'jesus740@gmail.com', 'icrashone', '$2a$10$yz8jfEWItmAfNaivhnv.ReY/E6tGyDFVbrIT3XDUjQ3wvrJxH0Hya', true, NOW(), NOW());
 INSERT INTO roles (name) VALUES ('ROLE_USER');
 INSERT INTO roles (name) VALUES ('ROLE_ADMIN');
 INSERT INTO roles (name) VALUES ('ROLE_OPERATOR');

@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.jdiaz.users.commons.models.entity.User;
+import com.commons.jdiaz.users.models.entity.User;
 import com.jdiaz.users.service.models.service.UserServiceInterface;
 
 @RestController
@@ -52,14 +52,16 @@ public class UserController {
 		try {
 			User newUser = userService.save(user);
 			return new ResponseEntity<User>(newUser, HttpStatus.CREATED);
-			
+
 		} catch (DataIntegrityViolationException e) {
 			Map<String, Object> response = new HashMap<String, Object>();
-			if(e.getMessage().contains("constraint") && e.getMessage().contains("USERS(EMAIL)")) {
-				response.put("error", "Email already exists");				
+			String cause = e.getRootCause().getMessage();
+
+			if (cause.contains("duplicate key") && cause.contains("email")) {
+				response.put("error", "Email already exists");
 			}
-			if(e.getMessage().contains("constraint") && e.getMessage().contains("USERS(USERNAME)")) {
-				response.put("error", "Username already exists");				
+			if (cause.contains("duplicate key") && cause.contains("username")) {
+				response.put("error", "Username already exists");
 			}
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 

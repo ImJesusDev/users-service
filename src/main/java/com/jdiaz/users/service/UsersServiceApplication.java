@@ -7,7 +7,7 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @EnableEurekaClient
-@EntityScan({"com.jdiaz.users.commons.models.entity"})
+@EntityScan({"com.commons.jdiaz.users.models.entity"})
 @SpringBootApplication
 @EnableFeignClients
 public class UsersServiceApplication {

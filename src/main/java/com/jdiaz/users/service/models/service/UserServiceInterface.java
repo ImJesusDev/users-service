@@ -3,7 +3,7 @@ package com.jdiaz.users.service.models.service;
 import java.util.List;
 import java.util.Optional;
 
-import com.jdiaz.users.commons.models.entity.User;;
+import com.commons.jdiaz.users.models.entity.User;
 
 public interface UserServiceInterface {
 
