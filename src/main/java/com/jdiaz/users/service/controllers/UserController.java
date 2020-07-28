@@ -3,11 +3,11 @@ package com.jdiaz.users.service.controllers;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -49,8 +49,21 @@ public class UserController {
 		if (result.hasErrors()) {
 			return validate(result);
 		}
-		User newUser = userService.save(user);
-		return new ResponseEntity<User>(newUser, HttpStatus.CREATED);
+		try {
+			User newUser = userService.save(user);
+			return new ResponseEntity<User>(newUser, HttpStatus.CREATED);
+			
+		} catch (DataIntegrityViolationException e) {
+			Map<String, Object> response = new HashMap<String, Object>();
+			if(e.getMessage().contains("constraint") && e.getMessage().contains("USERS(EMAIL)")) {
+				response.put("error", "Email already exists");				
+			}
+			if(e.getMessage().contains("constraint") && e.getMessage().contains("USERS(USERNAME)")) {
+				response.put("error", "Username already exists");				
+			}
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+
+		}
 	}
 
 	@GetMapping("/users/{id}")
