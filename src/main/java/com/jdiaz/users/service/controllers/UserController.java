@@ -1,26 +1,26 @@
 package com.jdiaz.users.service.controllers;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import javax.validation.Valid;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
+import com.jdiaz.users.service.models.service.UserServiceInterface;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.validation.BindingResult;
 import com.commons.jdiaz.users.models.entity.User;
-import com.jdiaz.users.service.models.service.UserServiceInterface;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
+import javax.validation.Valid;
+import java.io.IOException;
+import java.util.Optional;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RefreshScope
@@ -29,11 +29,24 @@ public class UserController {
 	@Autowired
 	private UserServiceInterface userService;
 
+	/* Get all users */
 	@GetMapping("/users")
 	public ResponseEntity<?> getUsers() {
 		return ResponseEntity.ok(userService.findAll());
 	}
+	
+	/* Update users photo */
+	@PutMapping("/users/{id}/update-photo")
+	public ResponseEntity<?> updateUserPhoto(@PathVariable Long id, @RequestParam MultipartFile photo)
+			throws IOException {
+		User updatedUser = userService.updateUserPhoto(id, photo);
+		if (!(updatedUser instanceof User)) {
+			return ResponseEntity.notFound().build();
+		}
+		return new ResponseEntity<User>(updatedUser, HttpStatus.CREATED);
+	}
 
+	/* Update users profile */
 	@PutMapping("/users/{id}")
 	public ResponseEntity<?> updateUser(@Valid @RequestBody User user, BindingResult result, @PathVariable Long id) {
 		if (result.hasErrors()) {
@@ -44,16 +57,17 @@ public class UserController {
 		return new ResponseEntity<User>(updatedUser, HttpStatus.CREATED);
 	}
 	
+	/* Update users last connection */
 	@PutMapping("/update-last-connection/{id}")
 	public ResponseEntity<?> updateUserLastConnection(@PathVariable Long id) {
-		System.out.println("UPDATING LAST CONNECTION");
 		User updatedUser = userService.updateUserLastConnection(id);
-		if(!(updatedUser instanceof User)) {
+		if (!(updatedUser instanceof User)) {
 			return ResponseEntity.notFound().build();
 		}
 		return new ResponseEntity<User>(updatedUser, HttpStatus.CREATED);
 	}
 
+	/* Register a new user */
 	@PostMapping("/register-user")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody User user, BindingResult result) {
 		if (result.hasErrors()) {
@@ -78,6 +92,7 @@ public class UserController {
 		}
 	}
 
+	/* Get user by id */
 	@GetMapping("/users/{id}")
 	public ResponseEntity<?> getUser(@PathVariable Long id) {
 		Optional<User> optionalUser = userService.findById(id);
@@ -88,6 +103,7 @@ public class UserController {
 		}
 	}
 
+	/* Get user by username */
 	@GetMapping("/users/search-username")
 	public ResponseEntity<?> searchUsername(@RequestParam String username) {
 		Optional<User> optionalUser = userService.findByUsername(username);
@@ -99,6 +115,7 @@ public class UserController {
 
 	}
 
+	/* Function to validate @RequestBody */
 	private ResponseEntity<?> validate(BindingResult result) {
 		Map<String, Object> errors = new HashMap<>();
 		result.getFieldErrors().forEach(error -> {
