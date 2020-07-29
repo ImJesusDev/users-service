@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +19,7 @@ import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
@@ -30,6 +32,12 @@ public class UserServiceImplementation implements UserServiceInterface {
 
 	@Autowired
 	private UserRepository userRepository;
+
+	@Autowired
+	private AmazonS3 amazonS3;
+
+	@Value("${config.aws.s3.bucket-name}")
+	private String bucket;
 
 	@Autowired
 	private Environment env;
@@ -103,20 +111,11 @@ public class UserServiceImplementation implements UserServiceInterface {
 				String fileName = currentDate.getTime() + ".png";
 				/* Destination folder */
 				String folder = "users/" + id + "/";
-				/* AWS Bucket */
-				String bucket = env.getProperty("config.aws.s3.bucket-name");
-				/* AWS Credentials */
-				AWSCredentials credentials = new BasicAWSCredentials(env.getProperty("config.aws.access-key"),
-						env.getProperty("config.aws.secret-key"));
-				/* Create S3 CLient */
-				AmazonS3Client s3client = (AmazonS3Client) AmazonS3ClientBuilder.standard()
-						.withCredentials(new AWSStaticCredentialsProvider(credentials)).withRegion(Regions.US_EAST_1)
-						.build();
 				/* Put Object */
-				s3client.putObject(new PutObjectRequest(bucket, folder + fileName, file)
+				amazonS3.putObject(new PutObjectRequest(bucket, folder + fileName, file)
 						.withCannedAcl(CannedAccessControlList.PublicRead));
 				/* Get Object URL */
-				String url = s3client.getResourceUrl(bucket, folder + fileName);
+				String url = ((AmazonS3Client) amazonS3).getResourceUrl(bucket, folder + fileName);
 				/* Get the User model */
 				User dbUser = optionalUser.get();
 				/* Update the photo URL */
