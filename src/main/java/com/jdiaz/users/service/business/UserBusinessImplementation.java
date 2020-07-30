@@ -1,4 +1,4 @@
-package com.jdiaz.users.service.models.service;
+package com.jdiaz.users.service.business;
 
 
 import java.io.IOException;
@@ -11,17 +11,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import com.commons.jdiaz.users.models.entity.User;
-import com.jdiaz.users.service.components.AWS;
-import com.jdiaz.users.service.models.repositories.UserRepository;
+import com.jdiaz.users.service.helpers.AwsS3Helper;
+import com.jdiaz.users.service.repositories.UserRepository;
 
 @Service
-public class UserServiceImplementation implements UserServiceInterface {
+public class UserBusinessImplementation implements UserBusinessInterface {
 
 	@Autowired
 	private UserRepository userRepository;
 
 	@Autowired
-	private AWS awsComponent;
+	private AwsS3Helper awsComponent;
 
 	/* Get all users */
 	@Override

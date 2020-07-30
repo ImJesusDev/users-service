@@ -1,4 +1,4 @@
-package com.jdiaz.users.service.models.service;
+package com.jdiaz.users.service.business;
 
 import java.io.IOException;
 import java.util.List;
@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.commons.jdiaz.users.models.entity.User;
 
-public interface UserServiceInterface {
+public interface UserBusinessInterface {
 
 	public List<User> findAll();
 

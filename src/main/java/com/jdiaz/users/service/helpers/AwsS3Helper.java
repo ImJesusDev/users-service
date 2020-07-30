@@ -1,4 +1,4 @@
-package com.jdiaz.users.service.components;
+package com.jdiaz.users.service.helpers;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -18,7 +18,7 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 
 @Component
-public class AWS {
+public class AwsS3Helper {
 
 	@Autowired
 	private AmazonS3 amazonS3;

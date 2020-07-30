@@ -1,7 +1,6 @@
 package com.jdiaz.users.service.controllers;
 
 import org.springframework.cloud.context.config.annotation.RefreshScope;
-import com.jdiaz.users.service.models.service.UserServiceInterface;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +13,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.validation.BindingResult;
 import com.commons.jdiaz.users.models.entity.User;
+import com.jdiaz.users.service.business.UserBusinessInterface;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import javax.validation.Valid;
@@ -27,19 +28,19 @@ import java.util.Map;
 public class UserController {
 
 	@Autowired
-	private UserServiceInterface userService;
+	private UserBusinessInterface userBusiness;
 
 	/* Get all users */
 	@GetMapping("/users")
 	public ResponseEntity<?> getUsers() {
-		return ResponseEntity.ok(userService.findAll());
+		return ResponseEntity.ok(userBusiness.findAll());
 	}
 	
 	/* Update users photo */
 	@PutMapping("/users/{id}/update-photo")
 	public ResponseEntity<?> updateUserPhoto(@PathVariable Long id, @RequestParam MultipartFile photo)
 			throws IOException {
-		User updatedUser = userService.updateUserPhoto(id, photo);
+		User updatedUser = userBusiness.updateUserPhoto(id, photo);
 		if (!(updatedUser instanceof User)) {
 			return ResponseEntity.notFound().build();
 		}
@@ -53,14 +54,14 @@ public class UserController {
 			return validate(result);
 		}
 		user.setId(id);
-		User updatedUser = userService.save(user);
+		User updatedUser = userBusiness.save(user);
 		return new ResponseEntity<User>(updatedUser, HttpStatus.CREATED);
 	}
 	
 	/* Update users last connection */
 	@PutMapping("/update-last-connection/{id}")
 	public ResponseEntity<?> updateUserLastConnection(@PathVariable Long id) {
-		User updatedUser = userService.updateUserLastConnection(id);
+		User updatedUser = userBusiness.updateUserLastConnection(id);
 		if (!(updatedUser instanceof User)) {
 			return ResponseEntity.notFound().build();
 		}
@@ -74,7 +75,7 @@ public class UserController {
 			return validate(result);
 		}
 		try {
-			User newUser = userService.save(user);
+			User newUser = userBusiness.save(user);
 			return new ResponseEntity<User>(newUser, HttpStatus.CREATED);
 
 		} catch (DataIntegrityViolationException e) {
@@ -95,7 +96,7 @@ public class UserController {
 	/* Get user by id */
 	@GetMapping("/users/{id}")
 	public ResponseEntity<?> getUser(@PathVariable Long id) {
-		Optional<User> optionalUser = userService.findById(id);
+		Optional<User> optionalUser = userBusiness.findById(id);
 		if (optionalUser.isPresent()) {
 			return ResponseEntity.ok(optionalUser.get());
 		} else {
@@ -106,7 +107,7 @@ public class UserController {
 	/* Get user by username */
 	@GetMapping("/users/search-username")
 	public ResponseEntity<?> searchUsername(@RequestParam String username) {
-		Optional<User> optionalUser = userService.findByUsername(username);
+		Optional<User> optionalUser = userBusiness.findByUsername(username);
 		if (optionalUser.isPresent()) {
 			return ResponseEntity.ok(optionalUser.get());
 		} else {
