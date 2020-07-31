@@ -24,8 +24,6 @@
 			<groupId>com.jdiaz.users.commons</groupId>
 			<artifactId>users-commons</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
-			<scope>system</scope>
-			<systemPath>${basedir}/src/main/resources/lib/users-commons-0.0.1-SNAPSHOT.jar</systemPath>
 		</dependency>
 
 		<dependency>
