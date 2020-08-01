@@ -10,4 +10,4 @@ before_install:
     - mvn clean install
 
 script:
-    - docker build -t jdiaz/users-service .
+    - docker build -t jdiaz740/users-service .
